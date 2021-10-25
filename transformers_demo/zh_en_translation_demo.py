@@ -20,11 +20,20 @@ s = [
     "This repository contains the source code and trained model for Joint Retrieval and Generation Training for Grounded Text Generation. RetGen is a joint training framework that simultaneously optimizes a dense passage retriever and a knowledge-grounded text generator in an end-to-end fashion. It can be applied to scenarios including but not limited to conversational modeling, text generation and open-domain question answering. The code implementation is based on DialoGPT, Huggingface Transformers, DPR and ANCE. Our human evaluation results indicates that RetGen can generate more relevant, interesting and human-like text comparing to vanilla DialoGPT or GPT-2.",
 ]
 for i in s:
-    inputs = tokenizer(f">>cmn<< {i}", return_tensors="pt")
-    print(i, inputs["input_ids"])
-    outputs = model.generate(inputs["input_ids"], max_length=128, num_beams=4, early_stopping=True)
+    inputs = tokenizer(f">>cmn_Hans<< {i}", return_tensors="pt")
+    print(i)
+    outputs = model.generate(inputs["input_ids"], max_length=256, num_beams=4, early_stopping=True)
     print(tokenizer.decode(outputs[0]))
 
+from transformers import AutoModelWithLMHead,AutoTokenizer,pipeline
+mode_name = 'liam168/trans-opus-mt-en-zh'
+model = AutoModelWithLMHead.from_pretrained(mode_name)
+tokenizer = AutoTokenizer.from_pretrained(mode_name)
+translation = pipeline("translation_en_to_zh", model=model, tokenizer=tokenizer)
+for i in s:
+    print(i)
+    print(translation(i, max_length=400))
+        
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 tokenizer = AutoTokenizer.from_pretrained("Helsinki-NLP/opus-mt-zh-en")
