@@ -15,14 +15,15 @@ outputs = model.generate(inputs["input_ids"], max_length=40, num_beams=4, early_
 print(tokenizer.decode(outputs[0]))
 
 s = [
-    "This repository contains the source code and trained model for Joint Retrieval and Generation Training for Grounded Text Generation. RetGen is a joint training framework that simultaneously optimizes a dense passage retriever and a knowledge-grounded text generator in an end-to-end fashion. It can be applied to scenarios including but not limited to conversational modeling, text generation and open-domain question answering. The code implementation is based on DialoGPT, Huggingface Transformers, DPR and ANCE. Our human evaluation results indicates that RetGen can generate more relevant, interesting and human-like text comparing to vanilla DialoGPT or GPT-2.",
     "The boar that was running forward, got cut from the sharp net and his head split into two. The younger brother tied the boar onto his shoulders and headed for the castle.",
     "Big brother! Let's go to the castle and share this happiness. The little brother, being so tired, fell asleep after drinking the wine.",
-    ]
+    "This repository contains the source code and trained model for Joint Retrieval and Generation Training for Grounded Text Generation. RetGen is a joint training framework that simultaneously optimizes a dense passage retriever and a knowledge-grounded text generator in an end-to-end fashion. It can be applied to scenarios including but not limited to conversational modeling, text generation and open-domain question answering. The code implementation is based on DialoGPT, Huggingface Transformers, DPR and ANCE. Our human evaluation results indicates that RetGen can generate more relevant, interesting and human-like text comparing to vanilla DialoGPT or GPT-2.",
+]
 for i in s:
     inputs = tokenizer(f">>cmn<< {i}", return_tensors="pt")
-    outputs = model.generate(inputs["input_ids"], max_length=256, num_beams=4, early_stopping=True)
-    print(i, tokenizer.decode(outputs[0]))
+    print(i, inputs["input_ids"])
+    outputs = model.generate(inputs["input_ids"], max_length=128, num_beams=4, early_stopping=True)
+    print(tokenizer.decode(outputs[0]))
 
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
