@@ -17,3 +17,4 @@ inputs = tokenizer(
 outputs = model.generate(inputs["input_ids"], max_length=40, num_beams=4, early_stopping=True)
 
 print(tokenizer.decode(outputs[0]))
+
