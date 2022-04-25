@@ -18,4 +18,7 @@ def cut_stdin():
 
 
 if __name__ == '__main__':
-    cut_stdin()
+    # cut_stdin()
+    if sys.argv[1] == 'hi':
+        print('hi')
+    print(len(sys.argv))
