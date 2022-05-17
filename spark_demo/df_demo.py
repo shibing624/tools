@@ -18,7 +18,6 @@ words = sc.parallelize(
 )
 counts = words.count()
 print("Number of elements in RDD -> %i" % counts)
-# words.saveAsTextFile("/user/bizdev_cd/algorithm/word_recommend/src/test_sa2")
 # words.saveAsTextFile("/tmp/readonly/xuming/temp/test_sa12")
 
 list_values = [['Sam', 28, 88], ['Flora', 28, 90], ['Run', 1, 60]]
