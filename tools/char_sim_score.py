@@ -40,11 +40,13 @@ if __name__ == '__main__':
     args = get_args()
     with open(args.in_file, 'r', encoding='utf-8') as f:
         for line in f:
-            line = line.strip()
+            line = line.strip('\n')
             if not line:
+                logger.error('empty line')
                 continue
             items = line.split('\t')
             if len(items) < 2:
+                logger.error('line error: %s' % line)
                 continue
             sim_score = sim_text_chars(items[args.src_col], items[args.trg_col])
             print(f"{items[args.src_col]}\t{items[args.trg_col]}\t{sim_score}")
