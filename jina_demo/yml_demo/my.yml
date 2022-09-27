@@ -1,0 +1,5 @@
+jtype: Flow
+executors:
+  - name: myexec1
+    uses: FooExecutor
+    py_modules: exec.py

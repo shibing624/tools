@@ -21,5 +21,9 @@ print("Number of elements in RDD -> %i" % counts)
 # words.saveAsTextFile("/tmp/readonly/xuming/temp/test_sa12")
 
 list_values = [['Sam', 28, 88], ['Flora', 28, 90], ['Run', 1, 60]]
-Spark_df = sc.createDataFrame(list_values, ['name', 'age', 'score'])
-Spark_df.show()
+from pyspark.sql import SQLContext
+
+sqlContext = SQLContext(sc)
+df = sqlContext.createDataFrame(list_values, ['name', 'age', 'score'])
+df.show()
+
