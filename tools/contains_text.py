@@ -32,14 +32,14 @@ if __name__ == '__main__':
 
     args = get_args()
     seeds = set()
-    with open(args.in_file1, 'r', encoding='utf-8') as f:
+    with open(args.seed_file, 'r', encoding='utf-8') as f:
         for line in f:
             line = line.strip('\n')
             terms = line.split('\t')
             seeds.add(terms[0])
     print('seeds:', len(seeds))
 
-    with open(args.in_file1, 'r', encoding='utf-8') as f:
+    with open(args.in_file, 'r', encoding='utf-8') as f:
         for line in f:
             line = line.strip('\n')
             terms = line.split('\t')
