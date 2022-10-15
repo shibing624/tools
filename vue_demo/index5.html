@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>todolist功能</title>
+    <script src="./vue.js"></script>
+
+</head>
+<body>
+<div id="root">
+    <div>
+        <input v-model="inputValue" />
+        <button @click="handleClick">submit</button>
+    </div>
+    <ul>
+        <li v-for="(item, index) of list" :key="index">
+            {{item}}
+            <button @click="handleDelete(index)">delete</button>
+        </li>
+    </ul>
+</div>
+
+<script>
+    new Vue({
+        el: "#root",
+        data: {
+            inputValue: '',
+            list: []
+        },
+        methods: {
+            handleClick: function () {
+                // this.list = this.inputValue.split(',')
+                this.list.push(this.inputValue)
+                this.inputValue = ''
+            },
+            handleDelete: function (index) {
+                this.list.splice(index, 1)
+            }
+        }
+    })
+</script>
+</body>
+</html>

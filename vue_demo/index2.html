@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>属性绑定和双向数据绑定</title>
+    <script src="./vue.js"></script>
+
+</head>
+<body>
+<div id="root">
+    <div :title="'ellis' +  title">hello world</div>
+    <h1>{{msg}}</h1>
+    <h2>heee</h2>
+    <input v-model="cont"/>
+    <div>{{cont}}</div>
+</div>
+
+<script>
+    new Vue({
+        el: "#root",
+        data: {
+            msg: 'hello',
+            title: "tis is hello world",
+            cont: "this is content"
+        }
+    })
+</script>
+</body>
+</html>
+

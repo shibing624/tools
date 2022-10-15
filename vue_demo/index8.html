@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Options API</title>
+    <!--    <script src="./vue.js"></script>-->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+</head>
+<body>
+<div id="shopping-list">
+    <h1>{{ header || 'Welcome'}} </h1>
+    <div class="add-item-form">
+        <input @keyup.enter="saveItem"
+               type="text" v-model="newItem" placeholder="Add an Item">
+        <p class="counter"> {{ char_count }} </p>
+        <p>{{reversedItems}}</p>
+        <label>
+            <input type="checkbox" v-model="newItemHighPriority">
+            High Priority
+        </label>
+        <button
+                @click="saveItem"
+                class="btn btn-primary">
+            Save Item
+        </button>
+    </div>
+    <ul>
+        <li v-for="item in reversedItems" :key="item.id"> {{item.label}}</li>
+    </ul>
+</div>
+
+<script>
+    const shoppingListApp = Vue.createApp({
+        data() {
+            return {
+                header: 'Shopping List',
+                newItem: '',
+                newItemHighPriority: false,
+                items: [
+                    {id: 1, label: '10 party hats'},
+                    {id: 2, label: '2 party horns'},
+                    {id: 3, label: '1 party popper'},
+                ],
+                inputValue: '',
+                list: []
+            }
+        },
+        computed: {
+            char_count() {
+                return this.newItem.length
+            },
+            reversedItems() {
+                return [...this.items].reverse()
+            }
+        },
+        methods: {
+            saveItem() {
+                if (this.newItem.length > 0) {
+                    this.items.push({
+                        id: this.items.length + 1,
+                        label: this.newItem
+                    })
+                    this.newItem = ''
+                }
+            }
+        }
+    }).mount('#shopping-list')
+
+</script>
+</body>
+</html>

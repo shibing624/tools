@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue-cli使用</title>
+    <script src="./vue.js"></script>
+
+</head>
+<body>
+<div id="root">
+    <div>
+        <input v-model="inputValue"/>
+        <button @click="handleClick">submit</button>
+    </div>
+    <ul>
+        <todo-item
+                v-for="(item, index) of list"
+                :key="index"
+                :content="item"
+                :index="index"
+                @delete="handleDelete"
+        ></todo-item>
+    </ul>
+</div>
+
+<script>
+
+    // Vue.component('todo-item', {
+    //     template: '<li>item</li>'
+    // })
+
+    var todoItem = {
+        props: ['content', 'index'],
+        template: '<li>{{content}} <button @click="handleDelete">delete</button> </li>',
+        methods: {
+            handleDelete: function () {
+                this.$emit('delete', this.index)
+            }
+        }
+    }
+
+
+    new Vue({
+        el: "#root",
+        components: {
+            'todo-item': todoItem
+        },
+        data: {
+            inputValue: '',
+            list: []
+        },
+        methods: {
+            handleClick: function () {
+                // this.list = this.inputValue.split(',')
+                if (this.inputValue) {
+                    this.list.push(this.inputValue)
+                    this.inputValue = ''
+                }
+            },
+            handleDelete: function (index) {
+                console.log('deleted' + index)
+                this.list.splice(index, 1)
+            }
+        }
+    })
+</script>
+</body>
+</html>

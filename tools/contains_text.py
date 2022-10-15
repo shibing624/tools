@@ -47,7 +47,7 @@ if __name__ == '__main__':
             flag = False
             for i in seeds:
                 if contains_text(name, i):
-                    print(name, i)
+                    print(name)
                     flag = True
                     break
             if not flag:
