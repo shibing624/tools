@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+
+<body>
+  <div class="imgouter">
+    <div class="left_div"><video id="v"></video></div>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <img id="photo" alt="photo" class="right_div">
+  </div>
+  <div class="msg"></div>
+
+</body>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .imgouter {
+    display: flex;
+    height: 90vh;
+    width: 100vw;
+  }
+
+  .left_div,
+  .right_div {
+    width: 0;
+    flex: 1;
+  }
+
+  #v {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+  }
+
+  .msg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 10vh;
+    font-size: 30px;
+  }
+</style>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+  function upload_img (imgstr) {
+    let arr = imgstr.split(";base64,");
+    let suffix = arr[0].split("/")[1];
+    let base64str = arr[1];
+    let para = {
+      image: base64str,
+      suffix: suffix
+    };
+    axios
+      .post('/base64file', para)
+      .then(function (response) {
+        let data = response.data;
+        if (data.code === 0) {
+          document.querySelector(".msg").innerHTML = "发现人像:" + data.obj.length;
+        } else {
+          document.querySelector(".msg").innerHTML = "未发现人像";
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+  }
+  !(function () {
+    // 老的浏览器可能根本没有实现 mediaDevices，所以我们可以先设置一个空的对象
+    if (navigator.mediaDevices === undefined) {
+      navigator.mediaDevices = {};
+    }
+    if (navigator.mediaDevices.getUserMedia === undefined) {
+      navigator.mediaDevices.getUserMedia = function (constraints) {
+        // 首先，如果有getUserMedia的话，就获得它
+        var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+        // 一些浏览器根本没实现它 - 那么就返回一个error到promise的reject来保持一个统一的接口
+        if (!getUserMedia) {
+          return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
+        }
+
+        // 否则，为老的navigator.getUserMedia方法包裹一个Promise
+        return new Promise(function (resolve, reject) {
+          getUserMedia.call(navigator, constraints, resolve, reject);
+        });
+      }
+    }
+    const constraints = {
+      video: true,
+      audio: false
+    };
+    let videoPlaying = false;
+    let v = document.getElementById('v');
+    let promise = navigator.mediaDevices.getUserMedia(constraints);
+    promise.then(stream => {
+      // 旧的浏览器可能没有srcObject
+      if ("srcObject" in v) {
+        v.srcObject = stream;
+      } else {
+        // 防止在新的浏览器里使用它，应为它已经不再支持了
+        v.src = window.URL.createObjectURL(stream);
+      }
+      v.onloadedmetadata = function (e) {
+        v.play();
+        videoPlaying = true;
+        take_pic();
+        setInterval(() => {
+          take_pic();
+        }, 3000);
+      };
+    }).catch(err => {
+      console.error(err.name + ": " + err.message);
+    });
+
+    function take_pic () {
+      if (videoPlaying) {
+        let canvas = document.getElementById('canvas');
+        canvas.width = v.videoWidth;
+        canvas.height = v.videoHeight;
+        canvas.getContext('2d').drawImage(v, 0, 0);
+        let data = canvas.toDataURL("image/jpeg", 0.8);
+        //console.info(data);
+        upload_img(data);
+        document.getElementById('photo').setAttribute('src', data);
+      }
+    }
+
+  })();
+</script>
+
+</html>
