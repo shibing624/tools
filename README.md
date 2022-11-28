@@ -56,11 +56,11 @@
 如果你在研究中使用了tools，请按如下格式引用：
 
 ```latex
-@software{tools,
-  author = {Xu Ming},
-  title = {tools: Python3 Tools for Beginners},
-  year = {2021},
-  url = {https://github.com/shibing624/tools},
+@misc{tools,
+  title={tools: Python3 Tools for Beginners},
+  author={Xu Ming},
+  year={2021},
+  howpublished={\url{https://github.com/shibing624/tools}},
 }
 ```
 
