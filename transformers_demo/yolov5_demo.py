@@ -17,7 +17,7 @@ results = model(img)
 
 # 结果
 print(results.print())  # or .show(), .save(), .crop(), .pandas(), etc.
-results.save(save_dir="zidane_res.jpg")
+results.save(save_dir="zidane_saved", exist_ok=True)
 
 print(results.pandas().xyxy[0])
 
