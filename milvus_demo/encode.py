@@ -8,6 +8,8 @@ from loguru import logger
 import numpy as np
 import random
 from similarities import SimHashSimilarity
+from sentence_transformers import SentenceTransformer
+from sklearn.preprocessing import normalize
 
 
 class SentenceModel:
@@ -30,6 +32,23 @@ class SentenceModel:
             raw_vectors.append(raw_vector)
             # binary_vectors.append(bytes(np.packbits(raw_vector, axis=-1).tolist()))
         return raw_vectors
+
+
+class SentenceBERTModel:
+    """
+    Say something about the ExampleCalass...
+    Args:
+        args_0 (`type`):
+        ...
+    """
+
+    def __init__(self):
+        self.model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
+
+    def sentence_encode(self, data):
+        embedding = self.model.encode(data)
+        sentence_embeddings = normalize(embedding)
+        return sentence_embeddings.tolist()
 
 
 if __name__ == '__main__':

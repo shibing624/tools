@@ -9,7 +9,7 @@ import os
 # MILVUS_HOST = os.getenv("MILVUS_HOST", "127.0.0.1")
 MILVUS_HOST = os.getenv("MILVUS_HOST", "9.135.143.192")
 MILVUS_PORT = int(os.getenv("MILVUS_PORT", "19530"))
-VECTOR_DIMENSION = int(os.getenv("VECTOR_DIMENSION", "64"))
+VECTOR_DIMENSION = int(os.getenv("VECTOR_DIMENSION", "384"))  # 64
 INDEX_FILE_SIZE = int(os.getenv("INDEX_FILE_SIZE", "1024"))
 METRIC_TYPE = os.getenv("METRIC_TYPE", "IP")  # HAMMING
 DEFAULT_TABLE = os.getenv("DEFAULT_TABLE", "milvus_qa_search_1")

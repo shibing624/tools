@@ -15,13 +15,12 @@ import os
 import sys
 from loguru import logger
 from fastapi import FastAPI, File, UploadFile
-from starlette.middleware.cors import CORSMiddleware
 
 sys.path.append(".")
 from milvus_helpers import MilvusHelper
 from operations import do_drop, do_load, do_count, do_search, do_get_answer
 from db_helpers import DBHelper
-from encode import SentenceModel
+from encode import SentenceBERTModel as SentenceModel
 
 pwd_path = os.path.abspath(os.path.dirname(__file__))
 app = FastAPI()
