@@ -20,7 +20,7 @@ sys.path.append(".")
 from milvus_helpers import MilvusHelper
 from operations import do_drop, do_load, do_count, do_search, do_get_answer
 from db_helpers import DBHelper
-from encode import SentenceBERTModel as SentenceModel
+from encode import SentenceModel
 
 pwd_path = os.path.abspath(os.path.dirname(__file__))
 app = FastAPI()

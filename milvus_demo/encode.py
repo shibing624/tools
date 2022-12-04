@@ -31,6 +31,7 @@ class SentenceModel:
             raw_vector = [int(i) for i in self.model.simhash(text)]
             raw_vectors.append(raw_vector)
             # binary_vectors.append(bytes(np.packbits(raw_vector, axis=-1).tolist()))
+        raw_vectors = [[random.random() for _ in range(dim)] for _ in range(5000)]
         return raw_vectors
 
 
