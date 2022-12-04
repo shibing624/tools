@@ -33,7 +33,7 @@ class DBHelper:
     def create_sqlite_table(self, table_name):
         # Create sqlite table if not exists
         self.test_connection()
-        sql = "create table if not exists " + table_name + " (milvus_id TEXT, question TEXT, answer TEXT);"
+        sql = "create table if not exists " + table_name + " (milvus_id TEXT PRIMARY KEY NOT NULL, question TEXT, answer TEXT);"
         try:
             self.cursor.execute(sql)
             self.conn.commit()
@@ -45,6 +45,7 @@ class DBHelper:
     def load_data_to_sqlite(self, table_name, data):
         # Batch insert (Milvus_ids, img_path) to sqlite
         self.test_connection()
+        logger.debug(f"insert data first row:{data[0]}, len:{len(data)}")
         sql = "insert into " + table_name + " (milvus_id,question,answer) values (?,?,?);"
         try:
             self.cursor.executemany(sql, data)
