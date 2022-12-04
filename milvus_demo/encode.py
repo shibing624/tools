@@ -21,5 +21,5 @@ class SentenceModel:
         logger.info(f'SentenceModel inited. Use {self.model}')
 
     def sentence_encode(self, sentences):
-        embeddings = [self.model.simhash(text) for text in sentences]
+        embeddings = [[int(i) for i in self.model.simhash(text)] for text in sentences]
         return embeddings

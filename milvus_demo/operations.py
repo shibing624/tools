@@ -47,8 +47,6 @@ def extract_features(file_dir, model):
         question_data = data['question'].tolist()
         answer_data = data['answer'].tolist()
         sentence_embeddings = model.sentence_encode(question_data)
-        # sentence_embeddings = model.encode(question_data)
-        # sentence_embeddings = normalize(sentence_embeddings).tolist()
         return question_data, answer_data, sentence_embeddings
     except Exception as e:
         logger.error(f" Error with extracting feature from question {e}")
