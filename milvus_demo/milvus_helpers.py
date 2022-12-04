@@ -18,7 +18,7 @@ class MilvusHelper:
         try:
             self.collection = None
             connections.connect(host=MILVUS_HOST, port=MILVUS_PORT)
-            logger.debug(f"Successfully connect to Milvus with IP:{MILVUS_HOST,} and PORT:{MILVUS_PORT}")
+            logger.debug(f"Successfully connect to Milvus with IP:{MILVUS_HOST} and PORT:{MILVUS_PORT}")
         except Exception as e:
             logger.error(f"Failed to connect Milvus: {e}")
             sys.exit(1)
@@ -48,7 +48,7 @@ class MilvusHelper:
         try:
             if not self.has_collection(collection_name):
                 field1 = FieldSchema(name="id", dtype=DataType.INT64, descrition="int64", is_primary=True, auto_id=True)
-                field2 = FieldSchema(name="embedding", dtype=DataType.BINARY_VECTOR, descrition="binary vector",
+                field2 = FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, descrition="vector",
                                      dim=VECTOR_DIMENSION, is_primary=False)
                 schema = CollectionSchema(fields=[field1, field2], description="collection description")
                 self.collection = Collection(name=collection_name, schema=schema)
