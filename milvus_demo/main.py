@@ -47,7 +47,7 @@ async def do_load_api(file: UploadFile = File(...), table_name: str = None):
         dirs = os.path.join(pwd_path, './data_dir/')
         if not os.path.exists(dirs):
             os.makedirs(dirs)
-        fname_path = os.path.join(os.getcwd(), os.path.join(dirs, fname))
+        fname_path = os.path.join(os.getcwd(), os.path.join(dirs, 'new_' + fname))
         with open(fname_path, 'wb') as f:
             f.write(text)
     except Exception:
