@@ -43,7 +43,7 @@ def do_drop(table_name, milvus_cli, db_cli):
 # Get the vector of question
 def extract_features(file_dir, model):
     try:
-        data = pd.read_csv(file_dir)
+        data = pd.read_csv(file_dir, sep='\t', encoding='utf-8')
         question_data = data['question'].tolist()
         answer_data = data['answer'].tolist()
         sentence_embeddings = model.sentence_encode(question_data)
