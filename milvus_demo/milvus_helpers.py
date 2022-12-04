@@ -77,7 +77,7 @@ class MilvusHelper:
         # Create IVF_FLAT index on milvus collection
         try:
             self.set_collection(collection_name)
-            default_index = {"index_type": "IVF_SQ8", "metric_type": METRIC_TYPE, "params": {"nlist": 16384}}
+            default_index = {"index_type": "IVF_FLAT", "metric_type": METRIC_TYPE, "params": {"nlist": 16384}}
             status = self.collection.create_index(field_name="embedding", index_params=default_index)
             if not status.code:
                 logger.debug(
