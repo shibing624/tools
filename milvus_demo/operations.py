@@ -62,15 +62,15 @@ def format_data(ids, question_data, answer_data):
     return data
 
 
-# Import vectors to Milvus and data to Mysql respectively
+# Import vectors to Milvus and data to sqlite respectively
 def do_load(table_name, file_dir, model, milvus_client, db_cli):
     if not table_name:
         table_name = DEFAULT_TABLE
     question_data, answer_data, sentence_embeddings = extract_features(file_dir, model)
     ids = milvus_client.insert(table_name, sentence_embeddings)
     milvus_client.create_index(table_name)
-    db_cli.create_mysql_table(table_name)
-    db_cli.load_data_to_mysql(table_name, format_data(ids, question_data, answer_data))
+    db_cli.create_sqlite_table(table_name)
+    db_cli.load_data_to_sqlite(table_name, format_data(ids, question_data, answer_data))
     return len(ids)
 
 

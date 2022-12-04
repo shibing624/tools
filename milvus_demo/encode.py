@@ -26,7 +26,7 @@ class SentenceModel:
         raw_vectors = []
         binary_vectors = []
         for text in sentences:
-            raw_vector = [float(i) for i in self.model.simhash(text)]
+            raw_vector = [int(i) for i in self.model.simhash(text)]
             raw_vectors.append(raw_vector)
             # binary_vectors.append(bytes(np.packbits(raw_vector, axis=-1).tolist()))
         return raw_vectors
