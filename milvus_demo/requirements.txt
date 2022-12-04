@@ -1,0 +1,8 @@
+uvicorn
+numpy
+pymilvus==2.0.1
+fastapi
+python-multipart
+pandas
+gdown
+similarities
