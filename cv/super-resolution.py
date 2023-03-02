@@ -28,3 +28,4 @@ prompt = "a white cat"
 
 upscaled_image = pipeline(prompt=prompt, image=low_res_img).images[0]
 upscaled_image.save("upsampled_cat.png")
+low_res_img.save("low_res_cat.png")
