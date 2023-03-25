@@ -45,10 +45,9 @@
 
 - Issue(建议)：[![GitHub issues](https://img.shields.io/github/issues/shibing624/tools.svg)](https://github.com/shibing624/tools/issues)
 - 邮件我：xuming: xuming624@qq.com
-- 微信我：
-加我*微信号：xuming624, 备注：个人名称-NLP* 进Python-NLP交流群。
+- 微信我： 加我*微信号：xuming624, 备注：个人名称-NLP* 进Python-NLP交流群。
 
-<img src="docs/we_image.jpeg" width="200" /><img src="docs/wechat.jpeg" width="200" />
+<img src="docs/wechat.jpeg" width="200" />
 
 
 # Cite
