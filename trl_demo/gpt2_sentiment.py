@@ -102,7 +102,10 @@ def build_dataset(config, dataset_name="imdb", input_min_text_length=2, input_ma
 
 
 dataset = build_dataset(config)
-
+print(dataset)
+print(next(iter(dataset)))
+dataset = dataset.select(range(1000))
+print(dataset)
 
 def collator(data):
     return dict((key, [d[key] for d in data]) for key in data[0])
@@ -116,6 +119,9 @@ We load the GPT2 model with a value head and the tokenizer. We load the model tw
 model = AutoModelForCausalLMWithValueHead.from_pretrained(config.model_name)
 ref_model = AutoModelForCausalLMWithValueHead.from_pretrained(config.model_name)
 tokenizer = AutoTokenizer.from_pretrained(config.model_name)
+# model_dir = '/apdcephfs/private_flemingxu/models/'
+# model.save_pretrained(model_dir + 'lvwerra-gpt2-imdb', push_to_hub=False)
+# tokenizer.save_pretrained(model_dir + 'lvwerra-gpt2-imdb', push_to_hub=False)
 
 tokenizer.pad_token = tokenizer.eos_token
 
@@ -137,10 +143,12 @@ sentiment_pipe = pipeline("sentiment-analysis", model="lvwerra/distilbert-imdb",
 """The model outputs are the logits for the negative and positive class. We will use the logits for positive class as a reward signal for the language model."""
 
 text = 'this movie was really bad!!'
-sentiment_pipe(text, **sent_kwargs)
+r = sentiment_pipe(text, **sent_kwargs)
+print(text, r)
 
 text = 'this movie was really good!!'
-sentiment_pipe(text, **sent_kwargs)
+r = sentiment_pipe(text, **sent_kwargs)
+print(text, r)
 
 """### Generation settings
 For the response generation we just use sampling and make sure top-k and nucleus sampling are turned off as well as a minimal length.
@@ -218,7 +226,7 @@ Let's inspect some examples from the IMDB dataset. We can use `model_ref` to com
 """
 
 #### get a batch from the dataset
-bs = 16
+bs = 8
 game_data = dict()
 dataset.set_format("pandas")
 df_batch = dataset[:].sample(bs)
@@ -250,7 +258,7 @@ game_data['rewards (after)'] = [output[1]["score"] for output in sentiment_pipe(
 
 # store results in a dataframe
 df_results = pd.DataFrame(game_data)
-print(df_results.head())
+print(df_results)
 
 """Looking at the reward mean/median of the generated sequences we observe a significant difference."""
 

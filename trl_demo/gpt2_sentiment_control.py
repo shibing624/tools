@@ -55,7 +55,7 @@ sentiment_pipe_kwargs = {
 
 config = PPOConfig(
     model_name="lvwerra/gpt2-imdb",
-    steps=51200,
+    steps=10000,
     learning_rate=1.41e-5,
     remove_unused_columns=False,
     log_with="wandb"

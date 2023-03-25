@@ -14,12 +14,12 @@
 # limitations under the License.
 from dataclasses import dataclass, field
 from typing import Optional
-
+import os
 import torch
 from datasets import load_dataset
-from peft import LoraConfig
+from peft import LoraConfig, get_peft_model
 from tqdm import tqdm
-from transformers import AutoTokenizer, HfArgumentParser, pipeline
+from transformers import AutoTokenizer, HfArgumentParser, pipeline, AutoModelForCausalLM
 
 from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer, set_seed
 from trl.core import LengthSampler
@@ -71,7 +71,7 @@ class ScriptArguments:
     log_with: Optional[str] = field(default=None, metadata={"help": "use 'wandb' to log with wandb"})
     learning_rate: Optional[float] = field(default=1.41e-5, metadata={"help": "the learning rate"})
     mini_batch_size: Optional[int] = field(default=16, metadata={"help": "the PPO minibatch size"})
-    batch_size: Optional[int] = field(default=256, metadata={"help": "the batch size"})
+    batch_size: Optional[int] = field(default=32, metadata={"help": "the batch size"})
     gradient_accumulation_steps: Optional[int] = field(
         default=1, metadata={"help": "the number of gradient accumulation steps"}
     )
@@ -131,7 +131,10 @@ def build_dataset(config, dataset_name="imdb", input_min_text_length=2, input_ma
 
 # We retrieve the dataloader by calling the `build_dataset` function.
 dataset = build_dataset(config)
-
+print(dataset)
+print(next(iter(dataset)))
+dataset = dataset.select(range(1000))
+print(dataset)
 
 def collator(data):
     return dict((key, [d[key] for d in data]) for key in data[0])
@@ -148,12 +151,14 @@ lora_config = LoraConfig(
     task_type="CAUSAL_LM",
 )
 
-model = AutoModelForCausalLMWithValueHead.from_pretrained(
+pretrained_model = AutoModelForCausalLM.from_pretrained(
     config.model_name,
-    load_in_8bit=True,
-    peft_config=lora_config,
-    layer_norm_names=[],
+    # load_in_8bit=True,
+    device_map='auto'
 )
+pretrained_model = get_peft_model(pretrained_model, lora_config)
+
+model = AutoModelForCausalLMWithValueHead.from_pretrained(pretrained_model)
 
 tokenizer = AutoTokenizer.from_pretrained(config.model_name)
 
@@ -171,7 +176,7 @@ def print_trainable_parameters(model):
         if param.requires_grad:
             trainable_params += param.numel()
     print(
-        f"trainable params: {trainable_params} || all params: {all_param} || trainable%: {100 * trainable_params / all_param}"
+        f"trainable params: {trainable_params} || all params: {all_param} || trainable%: {100 * trainable_params / all_param}%"
     )
 
 
@@ -188,7 +193,7 @@ ppo_trainer = PPOTrainer(config, model, ref_model=None, tokenizer=tokenizer, dat
 # to the same device as the PPOTrainer.
 device = ppo_trainer.accelerator.device
 if ppo_trainer.accelerator.num_processes == 1:
-    device = model.current_device if torch.cuda.is_available() else "cpu"  # to avoid a `pipeline` bug
+    device = 0 if torch.cuda.is_available() else "cpu"  # to avoid a `pipeline` bug
 sentiment_pipe = pipeline("sentiment-analysis", model="lvwerra/distilbert-imdb", device=device)
 
 # We then define the arguments to pass to the `generate` function. These arguments
@@ -206,7 +211,7 @@ output_min_length = 4
 output_max_length = 16
 output_length_sampler = LengthSampler(output_min_length, output_max_length)
 
-
+print('steps:', len(ppo_trainer.dataloader))
 for epoch, batch in tqdm(enumerate(ppo_trainer.dataloader)):
     query_tensors = batch["input_ids"]
 
@@ -233,7 +238,10 @@ for epoch, batch in tqdm(enumerate(ppo_trainer.dataloader)):
 
     stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
     ppo_trainer.log_stats(stats, batch, rewards)
+    print(stats, batch, rewards)
 
-model.save_pretrained(f"{script_args.model_name}-ppo-sentiment")
-tokenizer.save_pretrained(f"{script_args.model_name}-ppo-sentiment")
+
+os.makedirs('gpt-neo-125M-imdb-ppo-sentiment', exist_ok=True)
+model.save_pretrained(f"gpt-neo-125M-imdb-ppo-sentiment")
+tokenizer.save_pretrained(f"gpt-neo-125M-imdb-ppo-sentiment")
 # model.push_to_hub(f"{script_args.model_name}-ppo-sentiment")
