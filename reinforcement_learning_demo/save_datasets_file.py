@@ -3,6 +3,11 @@ from typing import Optional
 
 import torch
 from datasets import load_dataset
+
+imdb = load_dataset("imdb")
+imdb.save_to_disk('/apdcephfs/private_flemingxu/datasets/imdb')
+
+
 dataset_name = 'BelleGroup/generated_train_0.5M_CN'
 dataset = load_dataset(dataset_name)
 print(dataset)
