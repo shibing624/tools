@@ -12,7 +12,7 @@ import re
 import time
 from argparse import ArgumentParser
 from http import HTTPStatus
-from typing import Dict, List, Literal, Optional, Union
+from typing import Dict, List, Optional, Union
 
 import dashscope
 import uvicorn
@@ -22,8 +22,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 
-model = dashscope.Generation.Models.qwen_plus
-dashscope.api_key = "sk-。。。"  # Your Qwen API Key
+model = dashscope.Generation.Models.qwen_max
+dashscope.api_key = "sk-xxx"  # Your Qwen API Key
 
 app = FastAPI()
 
@@ -53,13 +53,13 @@ class ModelList(BaseModel):
 
 
 class ChatMessage(BaseModel):
-    role: Literal["user", "assistant", "system", "function"]
+    role: str
     content: Optional[str]
     function_call: Optional[Dict] = None
 
 
 class DeltaMessage(BaseModel):
-    role: Optional[Literal["user", "assistant", "system"]] = None
+    role: Optional[str] = None
     content: Optional[str] = None
 
 
@@ -77,18 +77,18 @@ class ChatCompletionRequest(BaseModel):
 class ChatCompletionResponseChoice(BaseModel):
     index: int
     message: ChatMessage
-    finish_reason: Literal["stop", "length", "function_call"]
+    finish_reason: str
 
 
 class ChatCompletionResponseStreamChoice(BaseModel):
     index: int
     delta: DeltaMessage
-    finish_reason: Optional[Literal["stop", "length"]]
+    finish_reason: Optional[str]
 
 
 class ChatCompletionResponse(BaseModel):
     model: str
-    object: Literal["chat.completion", "chat.completion.chunk"]
+    object: str
     choices: List[
         Union[ChatCompletionResponseChoice, ChatCompletionResponseStreamChoice]
     ]
