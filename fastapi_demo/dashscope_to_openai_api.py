@@ -22,7 +22,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 
-model = dashscope.Generation.Models.qwen_max
+model = dashscope.Generation.Models.qwen_turbo
 dashscope.api_key = "sk-xxx"  # Your Qwen API Key
 
 app = FastAPI()
@@ -398,7 +398,6 @@ async def create_chat_completion(request: ChatCompletionRequest):
             )
         generate = predict(query, history, request.model, stop_words, gen_kwargs)
         return EventSourceResponse(generate, media_type="text/event-stream")
-
     messages = convert_chatmessage_to_message(request.messages)
     response = dashscope.Generation.call(
         model=model,
@@ -406,15 +405,13 @@ async def create_chat_completion(request: ChatCompletionRequest):
         resule_format="message",
         stop=request.stop
     )
-
-    # if request.functions:
-    #     choice_data = parse_response(response)
-    # else:
-    #     choice_data = ChatCompletionResponseChoice(
-    #         index=0,
-    #         message=ChatMessage(role="assistant", content=response),
-    #         finish_reason="stop",
-    #     )
+    if not request.stream:
+        response = response.output.text
+        response = trim_stop_words(response, request.stop)
+        choice_data = parse_response(response)
+        return ChatCompletionResponse(
+            model=request.model, choices=[choice_data], object="chat.completion"
+        )
     choices = convert_response_to_choice(response.output.choices)
     return ChatCompletionResponse(
         model=request.model, choices=choices, object="chat.completion"
@@ -486,7 +483,7 @@ def _get_args():
     parser = ArgumentParser()
 
     parser.add_argument(
-        "--server-port", type=int, default=8000, help="Demo server port."
+        "--server-port", type=int, default=5000, help="Demo server port."
     )
     parser.add_argument(
         "--server-name",
